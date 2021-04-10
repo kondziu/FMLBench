@@ -44,7 +44,7 @@ The suite consists of the following benchmarks.
 
 `benchmarks/langtons_ant.fml`
 
-An ant moves on a world of square tiles. The ant has position on a specific tile and an orientation (up, down, left, right). The tiles are initiall all white, but each tile can be either black or white. The program runs for 1001 steps. In each step the ant moves one tile according to the following rules.
+An ant moves on a world of square tiles. The ant has position on a specific tile and an orientation (up, down, left, right). The tiles are initiall all white, but each tile can be either black or white. The program runs for 201 steps. In each step the ant moves one tile according to the following rules.
 
 - If the ant is on a while tile, it changes the tile's color to black, rotates clockwise and moves one tile forward.
 - If the ant is on a black tile, it changes the tile's color to white, rotates counterclockwise and moves one tile forward.
