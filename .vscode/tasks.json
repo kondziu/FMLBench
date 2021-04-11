@@ -31,5 +31,15 @@
             },
             "problemMatcher": []
         },
+        {
+            "label": "Compile report",
+            "type": "shell",
+            "command": "Rscript -e \"rmarkdown::render('${workspaceFolder}/report.Rmd')\"",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
     ]
 }
