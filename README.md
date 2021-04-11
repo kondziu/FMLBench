@@ -119,3 +119,25 @@ The program executed by the benchmark prints out a poem in 429 instructions.
 ```
 
 [[wiki]](https://en.wikipedia.org/wiki/Brainfuck)
+
+# Sudoku solver
+
+A brute force sudoku solver. It starts from the top-left corner of the board, adds a number from 1-9 (in order) in the first available empty spot and checks whether the board is still valid. It continues until the end of the board and backtracks to if the board becomes invalid at any point.
+
+The solver solves the following four puzzles.
+
+```
+8  |1 3|4        1|  6|435    85 |  1|  6    9 7| 5 |3  
+ 35|78 | 62       |  1|         7| 64|1        6|  3|9 5
+47 |  6| 9      5 |47 |98       4| 7 |59       1| 2 | 4 
+---+---+---    ---+---+---    ---+---+---    ---+---+---
+   |   | 24      2| 8 |7 9    2  | 56|  4      8|5 7|6  
+ 1 |3 5| 8       8|7  |612    6  |1 9| 7     6 4| 9 |1 7
+28 |   |        64| 1 | 5     7 1| 4 |  9     9 |   |8  
+---+---+---    ---+---+---    ---+---+---    ---+---+---
+ 2 |6  | 39    91 |342|8 7     1 |9  |46     5 9|  6| 73
+19 | 72|64      27|   | 9      96|  8|  7      2| 1 |   
+  8|5 9|  1    6 3| 9 |5       7 |6  |  1       | 4 |2 9
+```
+
+[[wiki]](https://en.wikipedia.org/wiki/Sudoku)
