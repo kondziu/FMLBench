@@ -804,3 +804,10 @@ begin
 end;
 
 interpreter(program(), false).eval();
+
+// > how to spend
+// >     this time
+// >         mogami river
+// > 
+// >             -- yukko
+// > 
