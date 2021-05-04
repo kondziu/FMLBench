@@ -26,6 +26,8 @@ load_or_install("ggplot2")
 load_or_install("scales")
 load_or_install("grid")
 load_or_install("gridExtra")
+load_or_install("stringr")
+load_or_install("tools")
 
 draw_grid <- function(sets, f) {
   graphs <- lapply(sets, FUN=f)
@@ -156,4 +158,36 @@ grid.arrange(
 
 TODO 
 
+## Memory usage
 
+```{r execution-time, echo=FALSE, fig.width=15}
+
+area_for_single_execution <- function(log_file) {
+  matches <- str_match(log_file, regex("heap_log:([^:]*):([^:]*).csv"))
+  benchmark <- str_replace_all(matches[2], "\\\\", "/")
+  implementation <- str_replace_all(matches[3], "\\\\", "/")
+  
+  heap_log <- read_csv(log_file) %>% mutate(elapsed=timestamp - min(timestamp))
+                                            
+  ggplot (heap_log, aes(x=elapsed, y=heap)) + geom_area() +
+    theme_dark() + 
+    theme(panel.grid.major = element_blank(), axis.ticks.x = element_blank(), legend.position = "none") +
+    xlab("Elapsed time [ms]") +
+    ylab("Heap size [B]") +
+    ggtitle(paste0("Memory usage in ", benchmark)) + 
+    labs(subtitle=implementation)
+}
+
+plots <- list()
+files <- list.files(".", pattern="heap_log:.*.csv")
+for (file in files) {
+  plots[[length(plots) + 1]] <- area_for_single_execution(file)
+}
+
+do.call(grid.arrange, plots)
+# area_for_single_execution("memory_log.csv")
+```
+
+#### Observations
+
+TODO

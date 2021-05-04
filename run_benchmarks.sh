@@ -2,7 +2,24 @@
 
 REFERENCE_FML='reference/target/release/fml'
 TIMING_LOG='timing_log.csv' 
+HEAP_LOG='heap_log.csv' 
+HEAP_SIZE=100 #MB
+
 OUTPUT_DIR='output'
+
+function run_and_record_heap_events {
+    local command="$1"
+    local benchmark="$2"
+    local result=
+
+    mkdir -p "$OUTPUT_DIR"
+    local output_file=$(mktemp "$OUTPUT_DIR/$(basename $benchmark .fml)+gc.XXX.out")
+    local log_file="$(basename "$HEAP_LOG" .csv):$(basename $benchmark .fml):${command//\//\\}.csv"
+
+    echo "STARTING [$iteration] \"$command\" run --heap-size $HEAP_SIZE --heap-log $log_file \"$benchmark\" > $output_file"
+    
+    "$command" run --heap-size $HEAP_SIZE --heap-log $log_file "$benchmark" >> "$output_file"
+}
 
 function run_and_record_time {
     local command="$1"
@@ -44,7 +61,15 @@ do
     do
         for implementation in "$REFERENCE_FML" "$@"
         do
-            run_and_record_time "$implementation" "$benchmark" $iteration
+            :#run_and_record_time "$implementation" "$benchmark" $iteration
         done     
     done
+done
+
+for benchmark in benchmarks/*.fml 
+do    
+    for implementation in "$REFERENCE_FML" "$@"
+    do
+        run_and_record_heap_events "$implementation" "$benchmark"
+    done     
 done
