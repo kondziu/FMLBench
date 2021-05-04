@@ -183,8 +183,9 @@ files <- list.files(".", pattern="heap_log:.*.csv")
 for (file in files) {
   plots[[length(plots) + 1]] <- area_for_single_execution(file)
 }
-
-do.call(grid.arrange, plots)
+if (length(plots) > 0) {
+  do.call(grid.arrange, plots)
+}
 # area_for_single_execution("memory_log.csv")
 ```
 
