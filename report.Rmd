@@ -161,7 +161,7 @@ TODO
 ## Memory usage
 
 (These can take a while to generate).
-```{r memory, echo=FALSE, fig.width=15}
+```{r memory, echo=FALSE, fig.width=15, fig.height=20}
 
 area_for_single_execution <- function(log_file) {
   matches <- str_match(log_file, regex("heap_log:([^:]*):([^:]*).csv"))
