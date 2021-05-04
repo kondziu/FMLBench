@@ -160,7 +160,8 @@ TODO
 
 ## Memory usage
 
-```{r execution-time, echo=FALSE, fig.width=15}
+(These can take a while to generate).
+```{r memory, echo=FALSE, fig.width=15}
 
 area_for_single_execution <- function(log_file) {
   matches <- str_match(log_file, regex("heap_log:([^:]*):([^:]*).csv"))
@@ -169,10 +170,10 @@ area_for_single_execution <- function(log_file) {
   
   heap_log <- read_csv(log_file) %>% mutate(elapsed=timestamp - min(timestamp))
                                             
-  ggplot (heap_log, aes(x=elapsed, y=heap)) + geom_area() +
+  ggplot (heap_log, aes(x=elapsed, y=memory)) + geom_area() +
     theme_dark() + 
     theme(panel.grid.major = element_blank(), axis.ticks.x = element_blank(), legend.position = "none") +
-    xlab("Elapsed time [ms]") +
+    xlab("Elapsed time [ns]") +
     ylab("Heap size [B]") +
     ggtitle(paste0("Memory usage in ", benchmark)) + 
     labs(subtitle=implementation)
@@ -186,7 +187,6 @@ for (file in files) {
 if (length(plots) > 0) {
   do.call(grid.arrange, plots)
 }
-# area_for_single_execution("memory_log.csv")
 ```
 
 #### Observations

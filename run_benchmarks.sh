@@ -61,7 +61,7 @@ do
     do
         for implementation in "$REFERENCE_FML" "$@"
         do
-            :#run_and_record_time "$implementation" "$benchmark" $iteration
+            run_and_record_time "$implementation" "$benchmark" $iteration
         done     
     done
 done
