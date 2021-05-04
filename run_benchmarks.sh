@@ -16,9 +16,9 @@ function run_and_record_heap_events {
     local output_file=$(mktemp "$OUTPUT_DIR/$(basename $benchmark .fml)+gc.XXX.out")
     local log_file="$(basename "$HEAP_LOG" .csv):$(basename $benchmark .fml):${command//\//\\}.csv"
 
-    echo "STARTING [$iteration] \"$command\" run --heap-size $HEAP_SIZE --heap-log $log_file \"$benchmark\" > $output_file"
+    echo "STARTING \"$command\" run --heap-size $HEAP_SIZE --heap-log \"$log_file\" \"$benchmark\" > \"$output_file\""
     
-    "$command" run --heap-size $HEAP_SIZE --heap-log $log_file "$benchmark" >> "$output_file"
+    "$command" run --heap-size "$HEAP_SIZE" --heap-log "$log_file" "$benchmark" >> "$output_file"
 }
 
 function run_and_record_time {
