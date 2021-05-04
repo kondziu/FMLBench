@@ -173,8 +173,19 @@ area_for_single_execution <- function(log_file) {
   ggplot (heap_log, aes(x=elapsed, y=memory)) + geom_area() +
     theme_dark() + 
     theme(panel.grid.major = element_blank(), axis.ticks.x = element_blank(), legend.position = "none") +
-    xlab("Elapsed time [ns]") +
-    ylab("Heap size [B]") +
+    scale_y_continuous(labels=function(x) 
+      ifelse(x >= 1024 * 1024 * 1014, paste0(as.integer(x / 1024 / 1024 / 1024),"GB"), 
+             ifelse(x >= 1024 * 1024, paste0(as.integer(x / 1024 / 1024), "MB"), 
+                    ifelse(x >= 1024, paste0(as.integer(x / 1024), "KB"), 
+                           paste0(x, "B"))))) +
+    scale_x_continuous(labels=function(x) 
+      ifelse(x >= 60 * 1000 * 1000 * 1000, paste0(as.integer(x / 60 / 1000 / 1000 / 1000),"min"), 
+          ifelse(x >= 1000 * 1000 * 1000, paste0(as.integer(x / 1000 / 1000 / 1000),"s"), 
+                 ifelse(x >= 1000 * 1000, paste0(as.integer(x / 1000 / 1000), "ms"), 
+                        ifelse(x >= 1000, paste0(as.integer(x / 1000), "μs"), 
+                               paste0(x, "ns")))))) +
+    xlab("Elapsed time") +
+    ylab("Heap size") +
     ggtitle(paste0("Memory usage in ", benchmark)) + 
     labs(subtitle=implementation)
 }
