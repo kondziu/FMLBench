@@ -168,9 +168,9 @@ area_for_single_execution <- function(log_file) {
   benchmark <- str_replace_all(matches[2], "\\\\", "/")
   implementation <- str_replace_all(matches[3], "\\\\", "/")
   
-  heap_log <- read_csv(log_file) %>% mutate(elapsed=timestamp - min(timestamp))
+  heap_log <- read_csv(log_file) %>% mutate(elapsed=timestamp - min(timestamp)) %>% mutate(gc <- ifelse(event=="G", timestamp, NA))
                                             
-  ggplot (heap_log, aes(x=elapsed, y=memory)) + geom_area() +
+  ggplot (heap_log, aes(x=elapsed, y=heap)) + geom_area() + geom_vline(aes(xintercept=gc))
     theme_dark() + 
     theme(panel.grid.major = element_blank(), axis.ticks.x = element_blank(), legend.position = "none") +
     scale_y_continuous(labels=function(x) 
