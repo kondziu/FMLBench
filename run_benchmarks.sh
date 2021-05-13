@@ -3,7 +3,7 @@
 REFERENCE_FML='reference/target/release/fml'
 TIMING_LOG='timing_log.csv' 
 HEAP_LOG='heap_log.csv' 
-HEAP_SIZE=20 #MB
+HEAP_SIZE=100 #MB
 
 OUTPUT_DIR='output'
 
