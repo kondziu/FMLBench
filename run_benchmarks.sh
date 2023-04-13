@@ -1,11 +1,14 @@
 #!/bin/bash
 
-REFERENCE_FML='reference/target/release/fml'
+# Locate this script on disk to use as root.
+ROOT_DIR=$(dirname $(readlink -f "$0"))
+
+# Where all output is saved to
+OUTPUT_DIR="output"
+
 TIMING_LOG='timing_log.csv' 
 HEAP_LOG='heap_log.csv' 
-HEAP_SIZE=100 #MB
-
-OUTPUT_DIR='output'
+HEAP_SIZE=100 #MiB
 
 function run_and_record_heap_events {
     local command="$1"
@@ -17,7 +20,7 @@ function run_and_record_heap_events {
     local log_file="$(basename "$HEAP_LOG" .csv):$(basename $benchmark .fml):${command//\//\\}.csv"
 
     echo "STARTING \"$command\" run --heap-size $HEAP_SIZE --heap-log \"$log_file\" \"$benchmark\" > \"$output_file\""
-    
+
     "$command" run --heap-size "$HEAP_SIZE" --heap-log "$log_file" "$benchmark" >> "$output_file"
 }
 
@@ -29,11 +32,11 @@ function run_and_record_time {
 
     mkdir -p "$OUTPUT_DIR"
     local output_file=$(mktemp "$OUTPUT_DIR/$(basename $benchmark .fml).XXX.out")
-    
+
     echo "STARTING [$iteration] \"$command\" run \"$benchmark\" > $output_file"
-    
+
     start_time_in_nanos=$(date +%s%N)
-    
+
     "$command" run "$benchmark" >> "$output_file"
 
     diff <(grep -e '// >' < "$benchmark" | sed 's/\/\/ > \?//') "$output_file" > "$output_file.diff"
@@ -42,7 +45,7 @@ function run_and_record_time {
     then result="true"
     else result="false"
     fi
-    
+
     end_time_in_nanos=$(date +%s%N)
     elapsed_time_in_nanos=$(($end_time_in_nanos - $start_time_in_nanos))
     elapsed_time_in_millis=$(($elapsed_time_in_nanos/1000/1000))
@@ -55,21 +58,21 @@ then
     echo "FML implementation, benchmark, iteration, millis, correct, ouput file" > "$TIMING_LOG"
 fi
 
-for benchmark in benchmarks/*.fml 
-do    
+for benchmark in "$ROOT_DIR/benchmarks/"*.fml 
+do
     for iteration in $(seq 1 10)
     do
-        for implementation in "$REFERENCE_FML" "$@"
+        for implementation in "$@"
         do
             run_and_record_time "$implementation" "$benchmark" $iteration
-        done     
+        done
     done
 done
 
-for benchmark in benchmarks/*.fml 
-do    
-    for implementation in "$REFERENCE_FML" "$@"
+for benchmark in "$ROOT_DIR/benchmarks/"*.fml 
+do
+    for implementation in "$@"
     do
         run_and_record_heap_events "$implementation" "$benchmark"
-    done     
+    done
 done
