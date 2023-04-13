@@ -153,7 +153,7 @@ grid.arrange(
   violins_for_benchmark("langtons_ant", "Langton's ant"),
   violins_for_benchmark("brainfuck", "Brainfuck interpreter") +  theme(axis.title.y = element_blank()),
   violins_for_benchmark("sudoku", "Sudoku solver") +  theme(axis.title.y = element_blank()),
-  ncol=3)
+  ncol=2)
 ```
 
 #### Observations
