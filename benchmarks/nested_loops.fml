@@ -1,0 +1,16 @@
+let i = null;
+let j = null;
+let k = null;
+
+i <- 0;
+while i < 5 do begin
+    j <- 0;
+    while j < 1000 do begin
+        k <- 0;
+        while k < 1000 do begin
+            k <- k + 1;
+        end;
+        j <- j + 1;
+    end;
+    i <- i + 1;
+end;
