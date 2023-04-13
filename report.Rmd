@@ -60,6 +60,7 @@ The experiment was run using three benchmark programs. Each benchmark was execut
 
 | Label                          | Description           | URL                                                                       |
 | :---------------               | :-------------        | :---------                                                                |
+| `nested_loops`                 | Nested loops          | https://github.com/kondziu/FMLBench/blob/main/benchmarks/nested_loops.fml |
 | `langtons_ant`                 | Langton's ant         | https://github.com/kondziu/FMLBench/blob/main/benchmarks/langtons_ant.fml |
 | `brainfuck`                    | Brainfuck interpreter | https://github.com/kondziu/FMLBench/blob/main/benchmarks/brainfuck.fml    |
 | `sudoku`                       | Sudoku solver         | https://github.com/kondziu/FMLBench/blob/main/benchmarks/sudoku.fml       |
@@ -148,6 +149,7 @@ violins_for_benchmark <- function (benchmark, title) {
 }
 
 grid.arrange(
+  violins_for_benchmark("nested_loops", "Nested loops") +  theme(axis.title.y = element_blank()),
   violins_for_benchmark("langtons_ant", "Langton's ant"),
   violins_for_benchmark("brainfuck", "Brainfuck interpreter") +  theme(axis.title.y = element_blank()),
   violins_for_benchmark("sudoku", "Sudoku solver") +  theme(axis.title.y = element_blank()),
