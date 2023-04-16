@@ -187,7 +187,7 @@ area_for_single_execution <- function(log_file, show_gc_time=FALSE) {
     gc_end <- heap_log %>% filter(event == "A") %>% 
       rename(end_timestamp=timestamp, end_event=event, end_heap=heap, end_elapsed=elapsed)
     if (gc_begin %>% count %>% pull(n) != gc_end %>% count %>% pull(n)) {
-      warn(paste0(
+      warning(paste0(
         "The number of GC start events (B) is different than GC end events (A): ",
         gc_begin %>% count %>% pull(n), "!=", gc_end %>% count %>% pull(n)
       ))
