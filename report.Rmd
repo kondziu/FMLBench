@@ -60,6 +60,7 @@ The experiment was run using three benchmark programs. Each benchmark was execut
 
 | Label                          | Description           | URL                                                                       |
 | :---------------               | :-------------        | :---------                                                                |
+| `nested_loops`                 | Nested loops          | https://github.com/kondziu/FMLBench/blob/main/benchmarks/nested_loops.fml |
 | `langtons_ant`                 | Langton's ant         | https://github.com/kondziu/FMLBench/blob/main/benchmarks/langtons_ant.fml |
 | `brainfuck`                    | Brainfuck interpreter | https://github.com/kondziu/FMLBench/blob/main/benchmarks/brainfuck.fml    |
 | `sudoku`                       | Sudoku solver         | https://github.com/kondziu/FMLBench/blob/main/benchmarks/sudoku.fml       |
@@ -118,7 +119,7 @@ correctness_for_implementation <- function(implementation, rows=1) {
   timing_log %>% 
     filter(`FML implementation` == !!implementation)  %>%
     ggplot(aes(x=iteration, y=benchmark)) + 
-    geom_tile(aes(fill=correct, color=correct, width=0.7, height=0.7), size=0.5) + 
+    geom_tile(aes(fill=correct, color=correct, width=0.7, height=0.7), linewidth=0.5) + 
     scale_x_discrete(breaks=1:10, limits=factor(1:10)) +
     scale_fill_manual(values=correctness1) +
     scale_color_manual(values=correctness2) +
@@ -148,10 +149,11 @@ violins_for_benchmark <- function (benchmark, title) {
 }
 
 grid.arrange(
+  violins_for_benchmark("nested_loops", "Nested loops") +  theme(axis.title.y = element_blank()),
   violins_for_benchmark("langtons_ant", "Langton's ant"),
   violins_for_benchmark("brainfuck", "Brainfuck interpreter") +  theme(axis.title.y = element_blank()),
   violins_for_benchmark("sudoku", "Sudoku solver") +  theme(axis.title.y = element_blank()),
-  ncol=3)
+  ncol=2)
 ```
 
 #### Observations
@@ -163,32 +165,43 @@ TODO
 (These can take a while to generate).
 ```{r memory_prep, echo=FALSE, message=FALSE, results='hide'}
 
-area_for_single_execution <- function(log_file, sample, show_max=TRUE) {
+area_for_single_execution <- function(log_file, show_gc_time=FALSE) {
   matches <- str_match(log_file, regex("heap_log:([^:]*):([^:]*).csv"))
   benchmark <- str_replace_all(matches[2], "\\\\", "/")
   implementation <- str_replace_all(matches[3], "\\\\", "/")
-  
+
   #cat(paste0("Preparing graph for: ", benchmark , " + ", implementation, "\n"));
-  browser()
-  
-  heap_log <- read_csv(log_file, col_types=cols()) %>% mutate(elapsed=timestamp - min(timestamp)) %>% mutate(gc = ifelse(event=="G", timestamp, as.integer(NA)))
-  max_heap_size <- heap_log %>% filter(event == "S") %>% pull(heap) %>% max
-  heap_log <- heap_log %>% mutate(heap = ifelse(event == "S", 0, heap))
-  
-  if (!missing(sample)) {
-    events = heap_log %>% count() %>% pull(n);
-    allocations <- heap_log %>% filter(event=="A")
-    other_events <- heap_log %>% filter(event!="A")
-    n_allocations <- allocations %>% count() %>% pull(n)
-    sample <- if (n_allocations > sample) {
-      heap_log <- rbind(other_events, allocations %>% sample_n(size=sample)) %>% arrange(timestamp)
-    }
-  }
+  #browser()
+
+  heap_log <- read_csv(log_file, col_types=cols()) %>% mutate(elapsed=timestamp - min(timestamp)) 
+  #%>% mutate(gc = ifelse(event=="B", timestamp, as.integer(NA)))
+  max_heap_size <- heap_log %>% pull(heap) %>% max
+  #heap_log <- heap_log %>% mutate(heap = ifelse(event == "S", 0, heap))
                                             
-  graph <- ggplot (heap_log, aes(x=elapsed, y=heap)) + geom_area() + geom_vline(aes(xintercept=gc))
-  if (show_max) {
-    graph <- graph + geom_hline(yintercept=max_heap_size, linetype="dashed", color = "white")
+  graph <- ggplot (heap_log, aes(x=elapsed, y=heap))
+  #geom_rect(xmin = -Inf, xmax = 0,   ymin = -Inf, ymax = 0,   fill = "red")
+
+  if (show_gc_time) {
+    gc_begin <- heap_log %>% filter(event == "B") %>% 
+      rename(start_timestamp=timestamp, start_event=event, start_heap=heap, start_elapsed=elapsed)
+    gc_end <- heap_log %>% filter(event == "A") %>% 
+      rename(end_timestamp=timestamp, end_event=event, end_heap=heap, end_elapsed=elapsed)
+    if (gc_begin %>% count %>% pull(n) != gc_end %>% count %>% pull(n)) {
+      warn(paste0(
+        "The number of GC start events (B) is different than GC end events (A): ",
+        gc_begin %>% count %>% pull(n), "!=", gc_end %>% count %>% pull(n)
+      ))
+    }
+    gc <- cbind(gc_begin, gc_end)
+    graph <- graph + geom_rect(data = gc, inherit.aes = FALSE,
+      aes(xmin = start_elapsed, xmax = end_elapsed, ymin = -Inf, ymax = +Inf),
+      color = "white")
   }
+  
+  graph <- graph + geom_area() #+ geom_vline(aes(xintercept=gc))
+  # if (show_max) {
+  #   graph <- graph + geom_hline(yintercept=max_heap_size, linetype="dashed", color = "white")
+  # }
   
   graph +
     theme_dark() + 
@@ -211,9 +224,10 @@ area_for_single_execution <- function(log_file, sample, show_max=TRUE) {
 }
 
 plots <- list()
-files <- list.files(".", pattern="heap_log:.*.csv")
+all_files <- list.files(recursive=TRUE)
+files <- all_files[grep(all_files, pattern="^heap_log:")]
 for (file in files) {
-  plots[[length(plots) + 1]] <- area_for_single_execution(file, show_max=FALSE, sample=1000) # change to show_max=TRUE to show a dotted line showing maximum heap size
+  plots[[length(plots) + 1]] <- area_for_single_execution(file, show_gc_time=TRUE) # set show_gc_time to TRUE to show (very slim) white rectangles indicating time spent inside GC, or FALSE to get rid of them
 }
 ```
 
