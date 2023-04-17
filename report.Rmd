@@ -65,6 +65,10 @@ The experiment was run using three benchmark programs. Each benchmark was execut
 | `brainfuck`                    | Brainfuck interpreter | https://github.com/kondziu/FMLBench/blob/main/benchmarks/brainfuck.fml    |
 | `sudoku`                       | Sudoku solver         | https://github.com/kondziu/FMLBench/blob/main/benchmarks/sudoku.fml       |
 
+### Nested loops
+
+A very plain and simple benchmark - just a few nested loops doing nothing. It's meant to test allocation of integers and methods operating on them (`+`, `<`). Because of its simplicity a lot of it could be optimized by a JIT. Though the fact that it consists of a single (entry point) function, might make it problematic for the simplest method JITs.
+
 ### Langton's ant
 
 An ant moves on a world of square tiles. The ant has position on a specific tile and an orientation (up, down, left, right). The tiles are initiall all white, but each tile can be either black or white. The program runs for 201 steps. In each step the ant moves one tile according to the following rules.

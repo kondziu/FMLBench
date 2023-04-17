@@ -6,8 +6,8 @@ ROOT_DIR=$(dirname $(readlink -f "$0"))
 # Where all output is saved to
 OUTPUT_DIR="output"
 
-TIMING_LOG='timing_log.csv' 
-HEAP_LOG='heap_log.csv' 
+TIMING_LOG='timing_log.csv'
+HEAP_LOG='heap_log.csv'
 HEAP_SIZE=100 #MiB
 
 function run_and_record_heap_events {
@@ -58,7 +58,7 @@ then
     echo "FML implementation, benchmark, iteration, millis, correct, ouput file" > "$TIMING_LOG"
 fi
 
-for benchmark in "$ROOT_DIR/benchmarks/"*.fml 
+for benchmark in "$ROOT_DIR/benchmarks/"*.fml
 do
     for iteration in $(seq 1 10)
     do
@@ -69,7 +69,7 @@ do
     done
 done
 
-for benchmark in "$ROOT_DIR/benchmarks/"*.fml 
+for benchmark in "$ROOT_DIR/benchmarks/"*.fml
 do
     for implementation in "$@"
     do

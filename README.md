@@ -1,44 +1,42 @@
 # FMLBench
-Tests and benchmarks for FML
 
-# Installing the reference
-
-Install the reference implementation like this:
-
-```
-git clone https://github.com/kondziu/FML.git reference
-cd reference
-cargo build --release
-cd ..
-```
-
-There are also VS Code build tasks to do this (`Download FML reference` and `Build FML reference`).
+Benchmarks for FML.
 
 # Running benchmarks
 
-Run the benchmarks using the reference implementation like this:
-
-```bash
-./run_benchmarks.sh
-```
-
-This runs 10 iterations of each benchmark using the reference implementation in `reference`.
-
-To run all benchmarks using your implementation, specify paths to one or more FML executables as arguments, eg.:
+To run all benchmarks using your various FML implementations, specify paths to one or more FML executables as arguments, eg.:
 
 ```bash
 ./run_benchmarks.sh ~/Workspace/myFML/fml ~/Workspace/myOtherFML/fml
 ```
 
-This runs 10 iteration of each benchmark with specified implementation plus the reference implementation.
+(One of the implemenations will probably be the reference implementation to have something to compare against.)
 
-The executed FML implementation must accept the following arguments: `run benchmarks/BENCHMARK.fml`.
+This runs 10 iterations of each benchmark with specified implementations, these measure wall time. One extra iteration is run to collect memory usage statistics.
 
-The outputs of the benchmarks are written to `output/BENCHMARK.out` and the timing is written to `timing_log.csv`.
+The executed FML implementation must accept the following arguments:
+
+```
+/path/to/fml run --heap-size $HEAP_SIZE_IN_MIB --heap-log $HEAP_LOG_FILE_NAME benchmarks/BENCHMARK.fml
+```
+
+The outputs of the benchmarks are written to the `output` directory. Timings are written to `timing_log.csv`. Memory usage statistics are written to `heap_log:BENCHMARK:\path\to\fml.csv` files.
+
+The file `report.Rmd` is a template for a report about the benchmarking results. It can be compiled with `rmarkdown` like this:
+
+```
+Rscript -e "rmarkdown::render('report.Rmd')"
+```
 
 # Benchmarks
 
 The suite consists of the following benchmarks.
+
+## Nested loops
+
+`benchmarks/nested_loops.fml`
+
+A very plain and simple benchmark - just a few nested loops doing nothing. It's meant to test allocation of integers and methods operating on them (`+`, `<`). Because of its simplicity a lot of it could be optimized by a JIT. Though the fact that it consists of a single (entry point) function, might make it problematic for the simplest method JITs.
 
 ## Langton's ant
 
