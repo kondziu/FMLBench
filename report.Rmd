@@ -102,13 +102,13 @@ A brute force sudoku solver. It starts from the top-left corner of the board, ad
 
 The experiment was run using the following implementations of the FML language. 
 
-| Label                          | Description                       | URL                                    |
-| :---------------               | :-------------                    | :---------                             |
-| `reference/target/release/fml` | The reference FML implementation. | https://github.com/kondziu/FML         |
-| TODO                           | TODO                              |                                        |
-| TODO                           | TODO                              |                                        |
+| Label                          | Description                       | URL                                            |
+| :---------------               | :-------------                    | :---------                                     |
+| `/cfml/fml`                    | The reference FML implementation. | https://gitlab.fit.cvut.cz/vlasami6/cfml       |
+| TODO                           | TODO                              |                                                |
+| TODO                           | TODO                              |                                                |
 
-The `reference/target/release/fml` implementation is written in Rust. The stack consists of a bytecode compiler and a bytecode interpreter. Execution times include parsing, compilation, and execution. The implementation does not garbage collect, so it does not incur garbage-collection-related overheads. 
+The `/cfml/fml` implementation is written in C The stack consists of a bytecode compiler and a bytecode interpreter. Execution times include parsing, compilation, and execution. The implementation does not garbage collect, so it does not incur garbage-collection-related overheads.
 
 TODO
 
