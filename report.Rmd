@@ -166,7 +166,6 @@ TODO
 
 ## Memory usage
 
-(These can take a while to generate).
 ```{r memory_prep, echo=FALSE, message=FALSE, results='hide'}
 
 area_for_single_execution <- function(log_file, show_gc_time=FALSE) {
