@@ -56,7 +56,7 @@ The benchmark was executed using the followins system specs.
 
 ## Benchmarks
 
-The experiment was run using three benchmark programs. Each benchmark was executed 10 times (iterations 1-10).
+The experiment was run using four benchmark programs. Each benchmark was executed 10 times (iterations 1-10).
 
 | Label                          | Description           | URL                                                                       |
 | :---------------               | :-------------        | :---------                                                                |
