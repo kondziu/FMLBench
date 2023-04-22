@@ -12,6 +12,8 @@ To run all benchmarks using your various FML implementations, specify paths to o
 
 (One of the implemenations will probably be the reference implementation to have something to compare against.)
 
+Don't forget to compile your programs in release mode! For example with [meson](mesonbuild.com/) use `meson setup builddir --buildtype release`.
+
 This runs 10 iterations of each benchmark with specified implementations, these measure wall time. One extra iteration is run to collect memory usage statistics.
 
 The executed FML implementation must accept the following arguments:
