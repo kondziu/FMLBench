@@ -170,7 +170,7 @@ TODO
 ```{r memory_prep, echo=FALSE, message=FALSE, results='hide'}
 
 area_for_single_execution <- function(log_file, show_gc_time=FALSE) {
-  matches <- str_match(log_file, regex("heap_log:([^:]*):([^:]*).csv"))
+  matches <- str_match(log_file, regex("heap_log/([^:]*):([^:]*).csv"))
   benchmark <- str_replace_all(matches[2], "\\\\", "/")
   implementation <- str_replace_all(matches[3], "\\\\", "/")
 

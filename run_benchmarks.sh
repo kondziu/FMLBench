@@ -3,11 +3,8 @@
 # Locate this script on disk to use as root.
 ROOT_DIR=$(dirname $(readlink -f "$0"))
 
-# Where all output is saved to
-OUTPUT_DIR="output"
-
 TIMING_LOG='timing_log.csv'
-HEAP_LOG='heap_log.csv'
+HEAP_LOG_DIR='heap_log'
 HEAP_SIZE=100 #MiB
 
 function run_and_record_heap_events {
@@ -15,13 +12,12 @@ function run_and_record_heap_events {
     local benchmark="$2"
     local result=
 
-    mkdir -p "$OUTPUT_DIR"
-    local output_file=$(mktemp "$OUTPUT_DIR/$(basename $benchmark .fml)+gc.XXX.out")
-    local log_file="$(basename "$HEAP_LOG" .csv):$(basename $benchmark .fml):${command//\//\\}.csv"
+    mkdir -p "$HEAP_LOG_DIR"
+    local log_file="$HEAP_LOG_DIR/$(basename $benchmark .fml):${command//\//\\}.csv"
 
-    echo "STARTING \"$command\" run --heap-size $HEAP_SIZE --heap-log \"$log_file\" \"$benchmark\" > \"$output_file\""
+    echo "STARTING \"$command\" run --heap-size $HEAP_SIZE --heap-log \"$log_file\" \"$benchmark\""
 
-    "$command" run --heap-size "$HEAP_SIZE" --heap-log "$log_file" "$benchmark" >> "$output_file"
+    "$command" run --heap-size "$HEAP_SIZE" --heap-log "$log_file" "$benchmark" >/dev/null
 }
 
 function run_and_record_time {
@@ -30,16 +26,14 @@ function run_and_record_time {
     local iteration="$3"
     local result=
 
-    mkdir -p "$OUTPUT_DIR"
-    local output_file=$(mktemp "$OUTPUT_DIR/$(basename $benchmark .fml).XXX.out")
-
-    echo "STARTING [$iteration] \"$command\" run \"$benchmark\" > $output_file"
+    echo "STARTING [$iteration] \"$command\" run \"$benchmark\""
 
     start_time_in_nanos=$(date +%s%N)
 
-    "$command" run "$benchmark" >> "$output_file"
+    local reference="$(grep -e '// >' < "$benchmark" | sed 's/\/\/ > \?//')"
+    local output="$("$command" run "$benchmark")"
 
-    diff <(grep -e '// >' < "$benchmark" | sed 's/\/\/ > \?//') "$output_file" > "$output_file.diff"
+    diff -u <(echo "$reference") <(echo "$output")
 
     if [ "$?" -eq 0 ]
     then result="true"
@@ -50,12 +44,12 @@ function run_and_record_time {
     elapsed_time_in_nanos=$(($end_time_in_nanos - $start_time_in_nanos))
     elapsed_time_in_millis=$(($elapsed_time_in_nanos/1000/1000))
 
-    echo "$command, $(basename $benchmark .fml), $iteration, $elapsed_time_in_millis, $result, $output_file" >> "$TIMING_LOG"
+    echo "$command, $(basename $benchmark .fml), $iteration, $elapsed_time_in_millis, $result" >> "$TIMING_LOG"
 }
 
 if [ ! -e "$TIMING_LOG" ]
 then
-    echo "FML implementation, benchmark, iteration, millis, correct, ouput file" > "$TIMING_LOG"
+    echo "FML implementation, benchmark, iteration, millis, correct" > "$TIMING_LOG"
 fi
 
 for benchmark in "$ROOT_DIR/benchmarks/"*.fml
