@@ -48,22 +48,22 @@ This report describes the results of a performance comparison between multiple i
 
 The benchmark was executed using the followins system specs.
 
-| Parameter                      | Spec                  | Notes |
-| :---------------               | :-------------        | :---- |
-| Processor                      | TODO                  |       |
-| Memory                         | TODO                  |       |
-| OS & kernel                    | TODO                  |       |
+| Parameter        | Spec                                      | Notes                                                    |
+| :----            | :-------------                            | :--------------------------------------------            |
+| Processor        | TODO                                      |                                                          |
+| Memory           | TODO                                      |                                                          |
+| OS & kernel      | TODO                                      |                                                          |
 
 ## Benchmarks
 
 The experiment was run using four benchmark programs. Each benchmark was executed 10 times (iterations 1-10).
 
-| Label                          | Description           | URL                                                                       |
-| :---------------               | :-------------        | :---------                                                                |
-| `nested_loops`                 | Nested loops          | https://github.com/kondziu/FMLBench/blob/main/benchmarks/nested_loops.fml |
-| `langtons_ant`                 | Langton's ant         | https://github.com/kondziu/FMLBench/blob/main/benchmarks/langtons_ant.fml |
-| `brainfuck`                    | Brainfuck interpreter | https://github.com/kondziu/FMLBench/blob/main/benchmarks/brainfuck.fml    |
-| `sudoku`                       | Sudoku solver         | https://github.com/kondziu/FMLBench/blob/main/benchmarks/sudoku.fml       |
+| Label               | Description           | URL                                                                       |
+| :-------            | :-------------        | :----------------------------------------------                           |
+| `nested_loops`      | Nested loops          | https://github.com/kondziu/FMLBench/blob/main/benchmarks/nested_loops.fml |
+| `langtons_ant`      | Langton's ant         | https://github.com/kondziu/FMLBench/blob/main/benchmarks/langtons_ant.fml |
+| `brainfuck`         | Brainfuck interpreter | https://github.com/kondziu/FMLBench/blob/main/benchmarks/brainfuck.fml    |
+| `sudoku`            | Sudoku solver         | https://github.com/kondziu/FMLBench/blob/main/benchmarks/sudoku.fml       |
 
 ### Nested loops
 
@@ -100,19 +100,19 @@ A brute force sudoku solver. It starts from the top-left corner of the board, ad
 
 ## Implementations
 
-The experiment was run using the following implementations of the FML language. 
+The experiment was run using the following implementations of the FML language.
 
-| Label                          | Description                       | URL                                            |
-| :---------------               | :-------------                    | :---------                                     |
-| `/cfml/fml`                    | The reference FML implementation. | https://gitlab.fit.cvut.cz/vlasami6/cfml       |
-| TODO                           | TODO                              |                                                |
-| TODO                           | TODO                              |                                                |
+| Label              | Description                                                   | URL                                            |
+| :-----             | :-----------------------------------------                    | :-------------------                           |
+| `/cfml/fml`        | The reference FML implementation.                             | https://gitlab.fit.cvut.cz/vlasami6/cfml       |
+| TODO               | TODO                                                          |                                                |
+| TODO               | TODO                                                          |                                                |
 
 The `/cfml/fml` implementation is written in C. The stack consists of a bytecode compiler and a bytecode interpreter. Execution times include parsing, compilation, and execution. The implementation does not garbage collect, so it does not incur garbage-collection-related overheads.
 
 TODO
 
-## Correctness 
+## Correctness
 
 The benchmarks were sanity checked after execution by comparing outputs.
 
@@ -120,15 +120,15 @@ The benchmarks were sanity checked after execution by comparing outputs.
 correctness1 <- setNames(c("#bd320b","#21e6ff"), c(FALSE, TRUE))
 correctness2 <- setNames(c("red","blue"), c(FALSE, TRUE))
 correctness_for_implementation <- function(implementation, rows=1) {
-  timing_log %>% 
+  timing_log %>%
     filter(`FML implementation` == !!implementation)  %>%
-    ggplot(aes(x=iteration, y=benchmark)) + 
-    geom_tile(aes(fill=correct, color=correct, width=0.7, height=0.7), linewidth=0.5) + 
+    ggplot(aes(x=iteration, y=benchmark)) +
+    geom_tile(aes(fill=correct, color=correct, width=0.7, height=0.7), linewidth=0.5) +
     scale_x_discrete(breaks=1:10, limits=factor(1:10)) +
     scale_fill_manual(values=correctness1) +
     scale_color_manual(values=correctness2) +
     #scale_fill_continuous(function(x) {print(x); ifelse(x < 0, "#bd320b","#21e6ff")}) +
-    theme_dark() + 
+    theme_dark() +
     theme(panel.grid.major = element_blank(), axis.ticks = element_blank(), axis.title.y = element_blank(), legend.position = "none") +
     ggtitle(implementation)
 }
@@ -148,6 +148,7 @@ violins_for_benchmark <- function (benchmark, title) {
     geom_violin(trim=FALSE, aes(color=`FML implementation`, fill=`FML implementation`)) +
     theme_dark() +
     theme(panel.grid.major = element_blank(), axis.ticks.x = element_blank(), legend.position = "none", axis.title.x = element_blank()) +
+    #expand_limits(y = 0) +
     ylab("Elapsed time [ms]") +
     ggtitle(title)
 }
@@ -169,25 +170,25 @@ TODO
 ```{r memory_prep, echo=FALSE, message=FALSE, results='hide'}
 
 area_for_single_execution <- function(log_file, show_gc_time=FALSE) {
-  matches <- str_match(log_file, regex("heap_log/([^:]*):([^:]*).csv"))
+  matches <- str_match(log_file, regex("heap_log/heap:([^:]*):([^:]*).csv"))
   benchmark <- str_replace_all(matches[2], "\\\\", "/")
   implementation <- str_replace_all(matches[3], "\\\\", "/")
 
   #cat(paste0("Preparing graph for: ", benchmark , " + ", implementation, "\n"));
   #browser()
 
-  heap_log <- read_csv(log_file, col_types=cols()) %>% mutate(elapsed=timestamp - min(timestamp)) 
+  heap_log <- read_csv(log_file, col_types=cols()) %>% mutate(elapsed=timestamp - min(timestamp))
   #%>% mutate(gc = ifelse(event=="B", timestamp, as.integer(NA)))
   max_heap_size <- heap_log %>% pull(heap) %>% max
   #heap_log <- heap_log %>% mutate(heap = ifelse(event == "S", 0, heap))
-                                            
+
   graph <- ggplot (heap_log, aes(x=elapsed, y=heap))
   #geom_rect(xmin = -Inf, xmax = 0,   ymin = -Inf, ymax = 0,   fill = "red")
 
   if (show_gc_time) {
-    gc_begin <- heap_log %>% filter(event == "B") %>% 
+    gc_begin <- heap_log %>% filter(event == "B") %>%
       rename(start_timestamp=timestamp, start_event=event, start_heap=heap, start_elapsed=elapsed)
-    gc_end <- heap_log %>% filter(event == "A") %>% 
+    gc_end <- heap_log %>% filter(event == "A") %>%
       rename(end_timestamp=timestamp, end_event=event, end_heap=heap, end_elapsed=elapsed)
     if (gc_begin %>% count %>% pull(n) != gc_end %>% count %>% pull(n)) {
       warning(paste0(
@@ -200,14 +201,14 @@ area_for_single_execution <- function(log_file, show_gc_time=FALSE) {
       aes(xmin = start_elapsed, xmax = end_elapsed, ymin = -Inf, ymax = +Inf),
       color = "white")
   }
-  
+
   graph <- graph + geom_area() #+ geom_vline(aes(xintercept=gc))
   # if (show_max) {
   #   graph <- graph + geom_hline(yintercept=max_heap_size, linetype="dashed", color = "white")
   # }
-  
+
   graph +
-    theme_dark() + 
+    theme_dark() +
     theme(panel.grid.major = element_blank(), axis.ticks.x = element_blank(), legend.position = "none") +
     scale_y_continuous(labels=function(x)
       ifelse(x >= 1024 * 1024 * 1014, paste0(as.integer(x / 1024 / 1024 / 1024),"GB"),
@@ -222,21 +223,21 @@ area_for_single_execution <- function(log_file, show_gc_time=FALSE) {
                                paste0(x, "ns")))))) +
     xlab("Elapsed time") +
     ylab("Heap size") +
-    ggtitle(paste0("Memory usage in ", benchmark)) + 
+    ggtitle(paste0("Memory usage in ", benchmark)) +
     labs(subtitle=implementation)
 }
 
 plots <- list()
-all_files <- list.files(recursive=TRUE)
-files <- all_files[grep(all_files, pattern="^heap_log:")]
+all_files <- list.files(path="heap_log", recursive=TRUE, full.names=TRUE)
+files <- all_files[grep(all_files, pattern=".*(nested|sudoku).*.csv$")]
 for (file in files) {
   plots[[length(plots) + 1]] <- area_for_single_execution(file, show_gc_time=TRUE) # set show_gc_time to TRUE to show (very slim) white rectangles indicating time spent inside GC, or FALSE to get rid of them
 }
 ```
 
-```{r memory, echo=FALSE, fig.width=15, fig.height=20}
+```{r memory, echo=FALSE, fig.width=10, fig.height=4 * length(implementations)}
 if (length(plots) > 0) {
-  do.call(grid.arrange, plots)
+  grid.arrange(grobs=plots, ncol=length(plots)/length(implementations))
 }
 ```
 

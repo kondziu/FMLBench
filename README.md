@@ -22,13 +22,17 @@ The executed FML implementation must accept the following arguments:
 /path/to/fml run --heap-size $HEAP_SIZE_IN_MIB --heap-log $HEAP_LOG_FILE_NAME benchmarks/BENCHMARK.fml
 ```
 
-The outputs of the benchmarks are written to the `output` directory. Timings are written to `timing_log.csv`. Memory usage statistics are written to `heap_log:BENCHMARK:\path\to\fml.csv` files.
+Timings are written to `timing_log.csv`. Memory usage statistics are written to `heap_log/heap:\path\to\fml:BENCHMARK:.csv` files.
 
 The file `report.Rmd` is a template for a report about the benchmarking results. It can be compiled with `rmarkdown` like this:
 
 ```
 Rscript -e "rmarkdown::render('report.Rmd')"
 ```
+
+Note that the template plots memory usage statistics only for two out of the
+four benchmarks. This is intentional, since these two show the most interesting
+interactions, other benchmarks wouldn't be much different.
 
 # Benchmarks
 
