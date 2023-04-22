@@ -142,22 +142,22 @@ TODO
 
 ## Execution time
 
-```{r execution-time, echo=FALSE, fig.width=15}
+```{r execution-time, echo=FALSE, fig.width=10, fig.height=25}
 violins_for_benchmark <- function (benchmark, title) {
-  ggplot(timing_log %>% filter(benchmark==!!benchmark), aes(x=`FML implementation`, y=millis)) + 
-    geom_violin(trim=FALSE, aes(color=`FML implementation`, fill=`FML implementation`)) + 
-    theme_dark() + 
+  ggplot(timing_log %>% filter(benchmark==!!benchmark), aes(x=`FML implementation`, y=millis)) +
+    geom_violin(trim=FALSE, aes(color=`FML implementation`, fill=`FML implementation`)) +
+    theme_dark() +
     theme(panel.grid.major = element_blank(), axis.ticks.x = element_blank(), legend.position = "none", axis.title.x = element_blank()) +
     ylab("Elapsed time [ms]") +
     ggtitle(title)
 }
 
 grid.arrange(
-  violins_for_benchmark("nested_loops", "Nested loops") +  theme(axis.title.y = element_blank()),
+  violins_for_benchmark("nested_loops", "Nested loops"),
   violins_for_benchmark("langtons_ant", "Langton's ant"),
-  violins_for_benchmark("brainfuck", "Brainfuck interpreter") +  theme(axis.title.y = element_blank()),
-  violins_for_benchmark("sudoku", "Sudoku solver") +  theme(axis.title.y = element_blank()),
-  ncol=2)
+  violins_for_benchmark("brainfuck", "Brainfuck interpreter"),
+  violins_for_benchmark("sudoku", "Sudoku solver"),
+  ncol=1)
 ```
 
 #### Observations
