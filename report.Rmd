@@ -108,7 +108,7 @@ The experiment was run using the following implementations of the FML language.
 | TODO                           | TODO                              |                                                |
 | TODO                           | TODO                              |                                                |
 
-The `/cfml/fml` implementation is written in C The stack consists of a bytecode compiler and a bytecode interpreter. Execution times include parsing, compilation, and execution. The implementation does not garbage collect, so it does not incur garbage-collection-related overheads.
+The `/cfml/fml` implementation is written in C. The stack consists of a bytecode compiler and a bytecode interpreter. Execution times include parsing, compilation, and execution. The implementation does not garbage collect, so it does not incur garbage-collection-related overheads.
 
 TODO
 
