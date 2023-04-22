@@ -13,7 +13,7 @@ function run_and_record_heap_events {
     local result=
 
     mkdir -p "$HEAP_LOG_DIR"
-    local log_file="$HEAP_LOG_DIR/$(basename $benchmark .fml):${command//\//\\}.csv"
+    local log_file="$HEAP_LOG_DIR/heap:${command//\//\\}:$(basename $benchmark .fml).csv"
 
     echo "STARTING \"$command\" run --heap-size $HEAP_SIZE --heap-log \"$log_file\" \"$benchmark\""
 
