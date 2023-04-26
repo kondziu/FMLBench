@@ -233,11 +233,13 @@ files <- all_files[grep(all_files, pattern=".*(nested|sudoku).*.csv$")]
 for (file in files) {
   plots[[length(plots) + 1]] <- area_for_single_execution(file, show_gc_time=TRUE) # set show_gc_time to TRUE to show (very slim) white rectangles indicating time spent inside GC, or FALSE to get rid of them
 }
+implementation_cnt = length(plots) / 2
 ```
 
-```{r memory, echo=FALSE, fig.width=10, fig.height=4 * length(implementations)}
+```{r memory, echo=FALSE, fig.width=10, fig.height=4 * implementation_cnt}
 if (length(plots) > 0) {
-  grid.arrange(grobs=plots, ncol=length(plots)/length(implementations))
+  #do.call(grid.arrange, plots)
+  grid.arrange(grobs=plots, nrow=implementation_cnt)
 }
 ```
 
